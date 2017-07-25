@@ -10,9 +10,14 @@ if [ ! -d "$SCRIPT_DIR/temp" ]; then
     mkdir $SCRIPT_DIR/temp
 fi
 
+# Create a last_backup directory if one doesn't already exist.
+if [ ! -d "$SCRIPT_DIR/last_backup" ]; then
+    mkdir $SCRIPT_DIR/last_backup
+fi
+
 TEMP=$SCRIPT_DIR/temp
 
-for SITE_CONFIG in $(ls $SCRIPT_DIR/config)
+for CONFIG in $(ls $SCRIPT_DIR/config)
 do
     # Reset all configuration options.
     DBHOST=localhost
@@ -26,10 +31,10 @@ do
     AWS_SECRET_ACCESS_KEY=''
     AWS_DEFAULT_REGION=''
 
-    echo Backing up $SITE_CONFIG...
+    echo Backing up $CONFIG...
 
     # Load configuration for this site.
-    source $SCRIPT_DIR/config/$SITE_CONFIG
+    source $SCRIPT_DIR/config/$CONFIG
 
     DUMP_FILE=$TEMP/$DBNAME-$(date +%Y-%m-%d).sql
 
@@ -48,10 +53,10 @@ do
         AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
         AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-        aws s3 cp $DUMP_FILE.gz s3://$S3BUCKET/$SITE_CONFIG/
+        aws s3 cp $DUMP_FILE.gz s3://$S3BUCKET/$CONFIG/
 
         # Keep the most recent backup locally.
-        mv $DUMP_FILE.gz $SCRIPT_DIR/last_backup/$SITE_CONFIG.sql.gz
+        mv $DUMP_FILE.gz $SCRIPT_DIR/last_backup/$CONFIG.sql.gz
     else
         echo "MySQL backup failed."
         exit 255
