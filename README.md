@@ -71,5 +71,5 @@ crontab -e
 
 # Add this line to backup once daily at 2am.
 # Replace USERNAME with your actual username.
-0 2 * * * /home/USERNAME/s3-db-backup/backup.sh > /home/USERNAME/s3-db-backup/log.txt
+0 2 * * * /home/USERNAME/s3-db-backup/backup.sh >> /home/USERNAME/s3-db-backup/log.txt 2>&1
 ```
