@@ -4,6 +4,7 @@
 # (c) Turner Logic, LLC. Distributed under the GNU GPL v2.0.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+AWS_CMD=$HOME/.local/bin/aws
 
 # Create a temp directory if one doesn't already exist.
 if [ ! -d "$SCRIPT_DIR/temp" ]; then
@@ -53,7 +54,7 @@ do
         AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
         AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
         AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION \
-        aws s3 cp $DUMP_FILE.gz s3://$S3BUCKET/$CONFIG/
+        $AWS_CMD s3 cp $DUMP_FILE.gz s3://$S3BUCKET/$CONFIG/
 
         # Keep the most recent backup locally.
         mv $DUMP_FILE.gz $SCRIPT_DIR/last_backup/$CONFIG.sql.gz
